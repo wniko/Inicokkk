@@ -19,14 +19,14 @@ public class MainActivity extends AppCompatActivity {
         initView();
     }
 
-    private void initView(){
+    private void initView() {
         btn_login = findViewById(R.id.btn_login);
         btn_reset = findViewById(R.id.btn_reset);
         username = findViewById(R.id.username);
         password = findViewById(R.id.password);
     }
 
-    private void initListener(){
+    private void initListener() {
         btn_reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void doLogin(){
+    private void doLogin() {
 
     }
 
