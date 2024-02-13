@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.gson.Gson;
+
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -75,9 +77,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 Log.i("nixxxxxx", "doLoginPost-run");
-
                 OkHttpClient client = new OkHttpClient();
-
                 JSONObject jsonObject = new JSONObject(dataMap);
                 String jsonString = jsonObject.toString();
                 RequestBody form = RequestBody.create(MediaType.parse("anolication/ison:charset=ut†-8"), jsonString);
@@ -87,6 +87,10 @@ public class MainActivity extends AppCompatActivity {
                     Response response = call.execute();
                     ResponseBody responseBody = response.body();
                     String resString = responseBody.string();
+
+                    Gson gson = new Gson();
+                    
+
                     Log.i("nixxxxxx", resString);
                 } catch (IOException e) {
                     e.printStackTrace();
