@@ -2,15 +2,20 @@ package com.example.inicokkk;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
 import com.google.gson.Gson;
+
 import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.HashMap;
+
 import okhttp3.Call;
 import okhttp3.FormBody;
 import okhttp3.Interceptor;
@@ -34,19 +39,6 @@ public class MainActivity extends AppCompatActivity {
         Log.i("nixxxxxx", "onCreate");
         initView();
         initListener();
-        // HTTP的拦截器
-        Interceptor interceptor = new Interceptor() {
-            @NonNull
-            @Override
-            public Response intercept(@NonNull Chain chain) throws IOException {
-                String sign = "sdfsdfsdf";
-                Request request = chain.request().newBuilder().addHeader("x-gorgon", sign).build();
-                //发送请求前
-                Response response = chain.proceed(request);
-                //发送请求后
-                return response;
-            }
-        };
     }
 
     private void initListener() {
@@ -82,12 +74,25 @@ public class MainActivity extends AppCompatActivity {
         HashMap<String, String> dataMap = new HashMap<String, String>();
         dataMap.put("username", user);
         dataMap.put("password", pass);
+        // HTTP的拦截器
+        Interceptor interceptor = new Interceptor() {
+            @NonNull
+            @Override
+            public Response intercept(@NonNull Chain chain) throws IOException {
+                String sign = "sdfsdfsdf";
+                Request request = chain.request().newBuilder().addHeader("x-gorgon", sign).build();
+                //发送请求前
+                Response response = chain.proceed(request);
+                //发送请求后
+                return response;
+            }
+        };
         // 发送JSON请求
         new Thread() {
             @Override
             public void run() {
                 Log.i("nixxxxxx", "doLoginPost-json");
-                OkHttpClient client = new OkHttpClient();
+                OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
                 JSONObject jsonObject = new JSONObject(dataMap);
                 String jsonString = jsonObject.toString();
                 RequestBody jsonBody = RequestBody.create(MediaType.parse("anolication/ison:charset=ut†-8"), jsonString);
@@ -125,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }.start();
         // 发送POST请求
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
                 Log.i("nixxxxxx", "doLoginPost-form");
