@@ -32,12 +32,15 @@ public class MainActivity extends AppCompatActivity {
 
     public EditText username, password;
 
+    public OkHttpClient client;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.i("nixxxxxx", "onCreate");
         initView();
+        initInterceptor();
         initListener();
     }
 
@@ -45,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
         btn_reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("nixxxxxx", "initListener，重置");
                 username.setText("");
                 password.setText("");
             }
@@ -53,10 +55,27 @@ public class MainActivity extends AppCompatActivity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("nixxxxxx", "initListener，登陆");
                 doLogin();
             }
         });
+    }
+
+    private void initInterceptor(){
+        // HTTP的拦截器
+        Interceptor interceptor = new Interceptor() {
+            @NonNull
+            @Override
+            public Response intercept(@NonNull Chain chain) throws IOException {
+                String sign = "sdfsdfsdf";
+                Request request = chain.request().newBuilder().addHeader("x-gorgon", sign).build();
+                //发送请求前
+                Response response = chain.proceed(request);
+                //发送请求后
+                return response;
+            }
+        };
+        client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+        Log.i("nixxxxxx", "initInterceptor");
     }
 
     private void initView() {
@@ -74,25 +93,12 @@ public class MainActivity extends AppCompatActivity {
         HashMap<String, String> dataMap = new HashMap<String, String>();
         dataMap.put("username", user);
         dataMap.put("password", pass);
-        // HTTP的拦截器
-        Interceptor interceptor = new Interceptor() {
-            @NonNull
-            @Override
-            public Response intercept(@NonNull Chain chain) throws IOException {
-                String sign = "sdfsdfsdf";
-                Request request = chain.request().newBuilder().addHeader("x-gorgon", sign).build();
-                //发送请求前
-                Response response = chain.proceed(request);
-                //发送请求后
-                return response;
-            }
-        };
+
         // 发送JSON请求
         new Thread() {
             @Override
             public void run() {
                 Log.i("nixxxxxx", "doLoginPost-json");
-                OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
                 JSONObject jsonObject = new JSONObject(dataMap);
                 String jsonString = jsonObject.toString();
                 RequestBody jsonBody = RequestBody.create(MediaType.parse("anolication/ison:charset=ut†-8"), jsonString);
@@ -115,7 +121,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 Log.i("nixxxxxx", "doLoginGet-form");
-                OkHttpClient client = new OkHttpClient();
                 Request request = new Request.Builder().url("http://192.168.5.113:5001/index_get?username=zhangsan").build();
                 Call call = client.newCall(request);
                 try {
@@ -134,7 +139,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 Log.i("nixxxxxx", "doLoginPost-form");
-                OkHttpClient client = new OkHttpClient();
                 FormBody formBody = new FormBody.Builder().add("username", "小溪").build();
                 Request request = new Request.Builder().url("http://192.168.5.113:5001/index_post").post(formBody).build();
                 Call call = client.newCall(request);
