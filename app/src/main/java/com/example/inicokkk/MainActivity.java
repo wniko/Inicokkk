@@ -1,5 +1,6 @@
 package com.example.inicokkk;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -17,12 +18,14 @@ import java.util.HashMap;
 
 import okhttp3.Call;
 import okhttp3.FormBody;
+import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,6 +39,17 @@ public class MainActivity extends AppCompatActivity {
         Log.i("nixxxxxx", "onCreate");
         initView();
         initListener();
+        // HTTP的拦截器
+        Interceptor interceptor = new Interceptor() {
+            @NonNull
+            @Override
+            public Response intercept(@NonNull Chain chain) throws IOException {
+                String sign = "sdfsdfsdf";
+                Request request = chain.request().newBuilder().addHeader("x-gorgon", sign).build();
+                Response response = chain.proceed(request);
+                return response;
+            }
+        };
     }
 
     private void initView() {
@@ -60,11 +74,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Log.i("nixxxxxx", "initListener，登陆");
                 doLogin();
-                doLoginPost();
             }
         });
     }
-
     private void doLogin() {
         Log.i("nixxxxxx", "doLoginGet");
         String user = String.valueOf(username.getText());
@@ -87,10 +99,7 @@ public class MainActivity extends AppCompatActivity {
                     Response response = call.execute();
                     ResponseBody responseBody = response.body();
                     String resString = responseBody.string();
-
                     Gson gson = new Gson();
-                    
-
                     Log.i("nixxxxxx", resString);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -98,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }.start();
-
+        // 发送GET请求
         new Thread() {
             @Override
             public void run() {
@@ -117,13 +126,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }.start();
-    }
-
-    private void doLoginPost() {
-        Log.i("nixxxxxx", "doLoginPost");
-        String user = String.valueOf(username.getText());
-        String pass = String.valueOf(password.getText());
-        new Thread() {
+        // 发送POST请求
+        new Thread(){
             @Override
             public void run() {
                 Log.i("nixxxxxx", "doLoginPost-run");
