@@ -1,15 +1,24 @@
 package com.example.inicokkk;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.util.HashMap;
+
 import okhttp3.Call;
 import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -48,16 +57,44 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.i("nixxxxxx", "initListener，登陆");
-                doLoginGet();
+                doLogin();
                 doLoginPost();
             }
         });
     }
 
-    private void doLoginGet() {
+    private void doLogin() {
         Log.i("nixxxxxx", "doLoginGet");
         String user = String.valueOf(username.getText());
         String pass = String.valueOf(password.getText());
+        HashMap<String, String> dataMap = new HashMap<String, String>();
+        dataMap.put("username", user);
+        dataMap.put("password", pass);
+        // 发送JSON请求
+        new Thread() {
+            @Override
+            public void run() {
+                Log.i("nixxxxxx", "doLoginPost-run");
+
+                OkHttpClient client = new OkHttpClient();
+
+                JSONObject jsonObject = new JSONObject(dataMap);
+                String jsonString = jsonObject.toString();
+                RequestBody form = RequestBody.create(MediaType.parse("anolication/ison:charset=ut†-8"), jsonString);
+                Request request = new Request.Builder().url("http://192.168.5.113:5001/indexp").post(form).build();
+                Call call = client.newCall(request);
+                try {
+                    Response response = call.execute();
+                    ResponseBody responseBody = response.body();
+                    String resString = responseBody.string();
+                    Log.i("nixxxxxx", resString);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.e("nixxxxxx", e.getMessage());
+                }
+            }
+        }.start();
+
         new Thread() {
             @Override
             public void run() {
