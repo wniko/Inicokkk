@@ -86,12 +86,12 @@ public class MainActivity extends AppCompatActivity {
         new Thread() {
             @Override
             public void run() {
-                Log.i("nixxxxxx", "doLoginPost-run");
+                Log.i("nixxxxxx", "doLoginPost-json");
                 OkHttpClient client = new OkHttpClient();
                 JSONObject jsonObject = new JSONObject(dataMap);
                 String jsonString = jsonObject.toString();
-                RequestBody form = RequestBody.create(MediaType.parse("anolication/ison:charset=ut†-8"), jsonString);
-                Request request = new Request.Builder().url("http://192.168.5.113:5001/indexp").post(form).build();
+                RequestBody jsonBody = RequestBody.create(MediaType.parse("anolication/ison:charset=ut†-8"), jsonString);
+                Request request = new Request.Builder().url("http://192.168.5.113:5001/index_post").post(jsonBody).build();
                 Call call = client.newCall(request);
                 try {
                     Response response = call.execute();
@@ -109,9 +109,9 @@ public class MainActivity extends AppCompatActivity {
         new Thread() {
             @Override
             public void run() {
-                Log.i("nixxxxxx", "doLoginGet-run");
+                Log.i("nixxxxxx", "doLoginGet-form");
                 OkHttpClient client = new OkHttpClient();
-                Request request = new Request.Builder().url("http://192.168.5.113:5001/indexg?username=zhangsan").build();
+                Request request = new Request.Builder().url("http://192.168.5.113:5001/index_get?username=zhangsan").build();
                 Call call = client.newCall(request);
                 try {
                     Response response = call.execute();
@@ -128,10 +128,10 @@ public class MainActivity extends AppCompatActivity {
         new Thread(){
             @Override
             public void run() {
-                Log.i("nixxxxxx", "doLoginPost-run");
+                Log.i("nixxxxxx", "doLoginPost-form");
                 OkHttpClient client = new OkHttpClient();
                 FormBody formBody = new FormBody.Builder().add("username", "小溪").build();
-                Request request = new Request.Builder().url("http://192.168.5.113:5001/indexp").post(formBody).build();
+                Request request = new Request.Builder().url("http://192.168.5.113:5001/index_post").post(formBody).build();
                 Call call = client.newCall(request);
                 try {
                     Response response = call.execute();
