@@ -88,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
         HashMap<String, String> dataMap = new HashMap<String, String>();
         dataMap.put("username", user);
         dataMap.put("password", pass);
-
         // 发送JSON请求
         new Thread() {
             @Override
