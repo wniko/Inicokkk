@@ -2,15 +2,21 @@ package com.example.inicokkk;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.example.inicokkk.untils.ApiService;
 import com.google.gson.Gson;
+
 import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.HashMap;
+
 import okhttp3.Call;
 import okhttp3.FormBody;
 import okhttp3.Interceptor;
@@ -20,6 +26,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,12 +57,13 @@ public class MainActivity extends AppCompatActivity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                doLogin();
+                // doLoginOkhttp();
+                doLoginRetrofit();
             }
         });
     }
 
-    private void initInterceptor(){
+    private void initInterceptor() {
         // HTTP的拦截器
         Interceptor interceptor = new Interceptor() {
             @NonNull
@@ -81,8 +89,27 @@ public class MainActivity extends AppCompatActivity {
         Log.i("nixxxxxx", "initView");
     }
 
-    private void doLogin() {
-        Log.i("nixxxxxx", "doLoginGet");
+    private void doLoginRetrofit() {
+        Log.i("nixxxxxx", "doLoginRetrofit");
+        new Thread() {
+            @Override
+            public void run() {
+                Retrofit retrofit = new Retrofit.Builder().baseUrl("http://192.168.5.113:5001").build();
+                ApiService httpRequest = retrofit.create(ApiService.class);
+                Call call = httpRequest.postLogin("wupeigi", "123123");
+                try {
+                    ResponseBody responseBody = call.execute().body();
+                    String responseString = responseBody.string();
+                    Log.i("登录", responseString);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    private void doLoginOkhttp() {
+        Log.i("nixxxxxx", "doLoginOkhttp");
         String user = String.valueOf(username.getText());
         String pass = String.valueOf(password.getText());
         HashMap<String, String> dataMap = new HashMap<String, String>();
