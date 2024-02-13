@@ -2,20 +2,15 @@ package com.example.inicokkk;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
 import com.google.gson.Gson;
-
 import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.HashMap;
-
 import okhttp3.Call;
 import okhttp3.FormBody;
 import okhttp3.Interceptor;
@@ -26,10 +21,10 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-
 public class MainActivity extends AppCompatActivity {
 
     public Button btn_login, btn_reset;
+
     public EditText username, password;
 
     @Override
@@ -46,18 +41,12 @@ public class MainActivity extends AppCompatActivity {
             public Response intercept(@NonNull Chain chain) throws IOException {
                 String sign = "sdfsdfsdf";
                 Request request = chain.request().newBuilder().addHeader("x-gorgon", sign).build();
+                //发送请求前
                 Response response = chain.proceed(request);
+                //发送请求后
                 return response;
             }
         };
-    }
-
-    private void initView() {
-        btn_login = findViewById(R.id.btn_login);
-        btn_reset = findViewById(R.id.btn_reset);
-        username = findViewById(R.id.username);
-        password = findViewById(R.id.password);
-        Log.i("nixxxxxx", "initView");
     }
 
     private void initListener() {
@@ -77,6 +66,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void initView() {
+        btn_login = findViewById(R.id.btn_login);
+        btn_reset = findViewById(R.id.btn_reset);
+        username = findViewById(R.id.username);
+        password = findViewById(R.id.password);
+        Log.i("nixxxxxx", "initView");
+    }
+
     private void doLogin() {
         Log.i("nixxxxxx", "doLoginGet");
         String user = String.valueOf(username.getText());
